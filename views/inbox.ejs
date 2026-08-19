@@ -1,0 +1,82 @@
+<% title = 'Inbox' %>
+<%- include('partials/header') %>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" fill="url(#logoGradInbox)"/><defs><linearGradient id="logoGradInbox" x1="0" y1="0" x2="24" y2="17" gradientUnits="userSpaceOnUse"><stop stop-color="#6a5cff"/><stop offset="1" stop-color="#ff5ca8"/></linearGradient></defs></svg>
+      <span>Anon Chat</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/dashboard" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24" width="19" height="19" fill="none"><path d="M3 11.5 12 4l9 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Home</a>
+      <a href="/dashboard/inbox" class="nav-item active"><span class="nav-icon"><svg viewBox="0 0 24 24" width="19" height="19" fill="none"><path d="M3 8.5 12 14l9-5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/></svg></span>Inbox</a>
+      <a href="/dashboard/settings" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24" width="19" height="19" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>Settings</a>
+    </nav>
+    <div class="sidebar-user">
+      <% if (profilePhoto) { %><img src="<%= profilePhoto %>" class="sidebar-avatar" alt="<%= username %>"><% } else { %><div class="sidebar-avatar sidebar-avatar-fallback"><%= username.charAt(0).toUpperCase() %></div><% } %>
+      <div class="sidebar-user-info"><div class="sidebar-user-name"><%= displayName || username %></div><div class="sidebar-user-handle">@<%= username %></div></div>
+      <form method="POST" action="/logout"><button type="submit" class="icon-btn" title="Log out"><svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></form>
+    </div>
+  </aside>
+
+  <main class="app-main">
+    <div class="app-header-mobile">
+      <div class="mobile-brand"><span>Anon Chat</span></div>
+      <div class="mobile-user-row"><a href="/dashboard" class="icon-btn-mobile" title="Home">←</a><form method="POST" action="/logout"><button type="submit" class="icon-btn-mobile" title="Log out">↗</button></form></div>
+    </div>
+
+    <div class="inbox-page-shell">
+      <header class="inbox-page-header">
+        <div><div class="mode-kicker">Private inbox</div><h1 class="panel-title">Your messages <span id="inbox-count-title">(0)</span></h1><p class="panel-subtitle">Anonymous messages from your links.</p></div>
+      </header>
+
+      <section class="inbox-page-content" aria-label="Inbox messages">
+    <div id="empty-state" class="empty-state hidden">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" width="34" height="34" fill="none"><path d="M3 8.5 12 14l9-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/></svg>
+      </div>
+      <h3>No messages yet</h3>
+      <p>Share your anonymous link to receive your first message.</p>
+    </div>
+    <div id="messages-list" class="messages-list" aria-live="polite"></div>
+      </section>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="/dashboard" class="nav-item"><span class="nav-icon">⌂</span><span>Home</span></a>
+    <a href="/dashboard/inbox" class="nav-item active"><span class="nav-icon">✉</span><span>Inbox</span></a>
+    <a href="/dashboard/settings" class="nav-item"><span class="nav-icon">⚙</span><span>Settings</span></a>
+  </nav>
+</div>
+
+<div id="message-detail" class="detail-overlay hidden" onclick="closeInboxDetailOutside(event)">
+  <div class="detail-box">
+    <div class="detail-topbar">
+      <button type="button" class="detail-icon-btn" onclick="closeInboxDetail()" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="detail-menu-wrapper">
+        <button type="button" class="detail-icon-btn" onclick="toggleInboxDetailMenu(event)" aria-label="More options">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+        </button>
+        <div id="inbox-detail-menu" class="detail-menu hidden">
+          <button type="button" class="detail-menu-item" onclick="exportInboxMessage(window.currentInboxId)">Share message</button>
+          <button type="button" class="detail-menu-item" onclick="reportInboxMessage(window.currentInboxId)">Report</button>
+          <button type="button" class="detail-menu-item" onclick="blockInboxSender(window.currentInboxId)">Block Sender</button>
+          <button type="button" class="detail-menu-item detail-menu-danger" onclick="deleteInboxMessage(window.currentInboxId)">Delete</button>
+        </div>
+      </div>
+    </div>
+    <div class="detail-gradient-header">
+      <h2 class="detail-title">Anonymous message</h2>
+      <div class="msg-meta"><span class="badge-private">Private</span><span class="dot-sep">•</span><span id="detail-time-text"></span></div>
+    </div>
+    <div id="detail-body" class="detail-body"></div>
+  </div>
+</div>
+
+<script type="application/json" id="inbox-seed"><%- JSON.stringify(messages || []).replace(/</g, '\\u003c') %></script>
+<script src="/js/inbox.js"></script>
+
+<%- include('partials/footer') %>

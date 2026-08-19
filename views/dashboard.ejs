@@ -1,0 +1,649 @@
+<% title = 'Dashboard' %>
+<%- include('partials/header') %>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" fill="url(#logoGrad)"/><path d="M12 12.8c-.1 0-.2 0-.3-.1-.3-.2-2.9-2-2.9-3.8 0-.9.7-1.6 1.6-1.6.6 0 1.1.3 1.6.9.5-.6 1-.9 1.6-.9.9 0 1.6.7 1.6 1.6 0 1.8-2.6 3.6-2.9 3.8-.1.1-.2.1-.3.1Z" fill="#fff"/><defs><linearGradient id="logoGrad" x1="0" y1="0" x2="24" y2="17" gradientUnits="userSpaceOnUse"><stop stop-color="#6a5cff"/><stop offset="1" stop-color="#ff5ca8"/></linearGradient></defs></svg>
+      <span>Anon Chat</span>
+    </div>
+    <nav class="sidebar-nav">
+      <button type="button" class="nav-item active" data-tab="home" onclick="switchTab('home')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" width="19" height="19" fill="none"><path d="M3 11.5 12 4l9 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        Home
+      </button>
+      <a href="/dashboard/inbox" class="nav-item" data-tab="inbox">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" width="19" height="19" fill="none"><path d="M3 8.5 12 14l9-5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/></svg></span>
+        Inbox
+        <span id="unread-badge-sidebar" class="unread-badge hidden">0</span>
+      </a>
+      <a href="/dashboard/settings" class="nav-item">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" width="19" height="19" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+        Settings
+      </a>
+    </nav>
+    <div class="sidebar-user">
+      <% if (profilePhoto) { %>
+        <img src="<%= profilePhoto %>" class="sidebar-avatar" alt="<%= username %>">
+      <% } else { %>
+        <div class="sidebar-avatar sidebar-avatar-fallback"><%= username.charAt(0).toUpperCase() %></div>
+      <% } %>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name"><%= displayName || username %></div>
+        <div class="sidebar-user-handle">@<%= username %></div>
+      </div>
+      <form method="POST" action="/logout">
+        <button type="submit" class="icon-btn" title="Log out">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+    </div>
+  </aside>
+
+  <main class="app-main">
+    <!-- HOME TAB -->
+    <div class="tab-panel active" data-panel="home">
+      <div class="app-header-mobile">
+        <div class="mobile-brand">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" fill="url(#logoGradM)"/><defs><linearGradient id="logoGradM" x1="0" y1="0" x2="24" y2="17" gradientUnits="userSpaceOnUse"><stop stop-color="#6a5cff"/><stop offset="1" stop-color="#ff5ca8"/></linearGradient></defs></svg>
+          <span>Anon Chat</span>
+        </div>
+        <div class="mobile-user-row">
+          <% if (profilePhoto) { %>
+            <img src="<%= profilePhoto %>" class="mobile-avatar" alt="<%= username %>">
+          <% } else { %>
+            <div class="mobile-avatar mobile-avatar-fallback"><%= username.charAt(0).toUpperCase() %></div>
+          <% } %>
+          <a href="/dashboard/settings" class="icon-btn-mobile" title="Settings">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          </a>
+          <form method="POST" action="/logout">
+            <button type="submit" class="icon-btn-mobile" title="Log out">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <h1 class="panel-title">Hey, <%= displayName || username %></h1>
+        <p class="panel-subtitle">Share your link to start receiving anonymous messages.</p>
+
+        <div class="mode-carousel" aria-label="Anonymous chat versions">
+          <div class="mode-carousel-viewport" id="mode-carousel-viewport" tabindex="0">
+            <div id="mode-deck" class="mode-deck"></div>
+          </div>
+          <div class="mode-carousel-controls">
+            <button type="button" class="carousel-arrow" onclick="moveMode(-1)" aria-label="Previous chat version">‹</button>
+            <div id="mode-dots" class="mode-dots" role="tablist" aria-label="Chat versions"></div>
+            <button type="button" class="carousel-arrow" onclick="moveMode(1)" aria-label="Next chat version">›</button>
+          </div>
+          <div class="link-actions mode-actions">
+            <button type="button" onclick="copyLink()" class="btn-primary btn-small">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.8"/></svg>
+              Copy Link
+            </button>
+            <div class="share-wrapper">
+              <button type="button" onclick="shareLink(event)" class="btn-secondary btn-small">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none"><circle cx="18" cy="5" r="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="6" cy="12" r="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="18" cy="19" r="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M8.2 10.8 15.8 6.2M8.2 13.2l7.6 4.6" stroke="currentColor" stroke-width="1.7"/></svg>
+                Share Link
+              </button>
+              <div id="share-menu" class="share-menu hidden">
+                <button type="button" class="share-item" onclick="shareTo('whatsapp')">
+                  <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="12" fill="#25D366"/><path d="M12 5.5a6.5 6.5 0 0 0-5.6 9.8L5.5 18.5l3.3-.9A6.5 6.5 0 1 0 12 5.5Zm0 1.4a5.1 5.1 0 1 1-2.6 9.5l-.3-.2-1.9.5.5-1.8-.2-.3A5.1 5.1 0 0 1 12 6.9Zm-2.2 2.4c-.1 0-.4 0-.5.2-.2.2-.7.7-.7 1.6s.7 1.9.8 2c.1.1 1.4 2.2 3.5 3 1.7.7 2 .5 2.4.5.4 0 1.3-.5 1.4-1s.2-.9.1-1c0 0-.2-.1-.4-.2l-1.4-.7c-.2-.1-.3-.1-.5.1l-.6.8c-.1.1-.2.2-.4.1-.2-.1-.9-.3-1.7-1.1-.6-.6-1-1.3-1.2-1.5-.1-.2 0-.3.1-.4l.4-.5c.1-.1.1-.2.2-.4v-.4l-.6-1.5c-.2-.4-.3-.4-.5-.4Z" fill="#fff"/></svg>
+                  <span>WhatsApp</span>
+                </button>
+                <button type="button" class="share-item" onclick="shareTo('snapchat')">
+                  <svg viewBox="0 0 24 24" width="20" height="20"><circle cx="12" cy="12" r="12" fill="#FFFC00"/><path d="M12 6c-2 0-3.4 1.6-3.4 3.6 0 .5.1 1.2.1 1.6-.3.1-.9.1-1.3-.1-.2-.1-.5 0-.5.3 0 .5.4 1 1.1 1.4-.1.2-.4.5-1 .7-.3.1-.2.5 0 .6.3.2.9.4 1.5.5.1.2.1.5.4.7.4.3 1.3-.1 2.1.4.6.4 1.1 1 2 1s1.4-.6 2-1c.8-.5 1.7-.1 2.1-.4.3-.2.3-.5.4-.7.6-.1 1.2-.3 1.5-.5.2-.1.3-.5 0-.6-.6-.2-.9-.5-1-.7.7-.4 1.1-.9 1.1-1.4 0-.3-.3-.4-.5-.3-.4.2-1 .2-1.3.1 0-.4.1-1.1.1-1.6C15.4 7.6 14 6 12 6Z" fill="#000"/></svg>
+                  <span>Snapchat</span>
+                </button>
+                <button type="button" class="share-item" onclick="shareTo('instagram')">
+                  <svg viewBox="0 0 24 24" width="20" height="20"><defs><linearGradient id="igGrad" x1="0" y1="24" x2="24" y2="0"><stop offset="0" stop-color="#FFDC80"/><stop offset=".3" stop-color="#FCAF45"/><stop offset=".6" stop-color="#E1306C"/><stop offset="1" stop-color="#833AB4"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#igGrad)"/><rect x="6" y="6" width="12" height="12" rx="3.5" fill="none" stroke="#fff" stroke-width="1.6"/><circle cx="12" cy="12" r="3" fill="none" stroke="#fff" stroke-width="1.6"/><circle cx="16.2" cy="7.8" r="0.9" fill="#fff"/></svg>
+                  <span>Instagram</span>
+                </button>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-label">Total messages</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-unread">0</div>
+          <div class="stat-label">Unread</div>
+        </div>
+      </div>
+    </div>
+
+    <%- include('partials/inbox') %>
+  </main>
+
+  <nav class="bottom-nav">
+    <button type="button" class="nav-item active" data-tab="home" onclick="switchTab('home')">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" width="19" height="19" fill="none"><path d="M3 11.5 12 4l9 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span>Home</span>
+    </button>
+    <a href="/dashboard/inbox" class="nav-item" data-tab="inbox">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" width="19" height="19" fill="none"><path d="M3 8.5 12 14l9-5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8"/></svg></span>
+      <span>Inbox</span>
+      <span id="unread-badge-bottom" class="unread-badge hidden">0</span>
+    </a>
+    <a href="/dashboard/settings" class="nav-item">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" width="19" height="19" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 13.5a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V20a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H4a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1.1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1a1.7 1.7 0 0 0 1.9.3H10a1.7 1.7 0 0 0 1-1.6V4a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.9 2.9l-.1.1a1.7 1.7 0 0 0-.3 1.9V10a1.7 1.7 0 0 0 1.6 1H20a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+      <span>Settings</span>
+    </a>
+  </nav>
+</div>
+
+<!-- Message detail overlay -->
+<div id="message-detail" class="detail-overlay hidden" onclick="closeDetailOutside(event)">
+  <div class="detail-box">
+    <div class="detail-topbar">
+      <button type="button" class="detail-icon-btn" onclick="closeDetail()" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="detail-menu-wrapper">
+        <button type="button" class="detail-icon-btn" onclick="toggleDetailMenu(event)" aria-label="More options">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+        </button>
+        <div id="detail-menu" class="detail-menu hidden">
+          <button type="button" class="detail-menu-item" onclick="exportMessageImage(currentDetailId)">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none"><path d="M12 15V3m0 0 4 4m-4-4L8 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Share</span>
+          </button>
+          <button type="button" class="detail-menu-item" id="detail-report-btn" onclick="reportMessage(currentDetailId)">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none"><path d="M5 3v18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M5 4h11l-2.5 3.5L16 11H5" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+            <span id="detail-report-label">Report</span>
+          </button>
+          <button type="button" class="detail-menu-item" onclick="blockSender(currentDetailId)">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M5.5 5.5l13 13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <span>Block Sender</span>
+          </button>
+          <button type="button" class="detail-menu-item detail-menu-danger" onclick="deleteMessageCard(currentDetailId)">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2m-9 0 1 12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2l1-12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Delete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-gradient-header">
+      <h2 class="detail-title">Send me anonymous messages!</h2>
+      <div class="msg-meta">
+        <span class="badge-private">
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.8"/></svg>
+          Private
+        </span>
+        <span class="dot-sep">•</span>
+        <span class="detail-time-wrap">
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span id="detail-time-text"></span>
+        </span>
+      </div>
+    </div>
+    <div id="detail-body" class="detail-body"></div>
+  </div>
+</div>
+
+<script type="application/json" id="messages-seed"><%- JSON.stringify(messages).replace(/</g, '\\u003c') %></script>
+
+<script>
+  // ========== FIX: Ensure formatRelativeTime exists ==========
+  if (typeof formatRelativeTime === 'undefined') {
+    console.warn('formatRelativeTime not defined, adding fallback');
+    function formatRelativeTime(timestamp) {
+      try {
+        const date = new Date(timestamp);
+        if (isNaN(date.getTime())) return '';
+        
+        const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+        if (seconds < 5) return 'just now';
+        
+        const units = [
+          ['year', 31536000],
+          ['month', 2592000],
+          ['week', 604800],
+          ['day', 86400],
+          ['hour', 3600],
+          ['minute', 60],
+          ['second', 1]
+        ];
+        
+        for (const [name, secondsInUnit] of units) {
+          const value = Math.floor(seconds / secondsInUnit);
+          if (value >= 1) return `${value} ${name}${value > 1 ? 's' : ''} ago`;
+        }
+        return 'just now';
+      } catch (e) {
+        return '';
+      }
+    }
+  }
+
+  // ========== Your existing code ==========
+  const shareUsername = <%- JSON.stringify(username) %>;
+  const shareDisplayName = <%- JSON.stringify(displayName || username) %>;
+  const shareProfilePhoto = <%- JSON.stringify(profilePhoto || '') %>;
+
+  const chatModes = [
+    { slug: 'anonymous', name: 'Anonymous', description: 'Receive anonymous messages from anyone.', path: '/u', icon: '✦' },
+    { slug: 'confessions', name: 'Confessions', description: 'Give people a place to anonymously confess something.', path: '/confess', icon: '◇' },
+    { slug: 'about', name: 'One Thing About Me', description: 'Find out what people really think about you.', path: '/about', icon: '◌' },
+    { slug: 'ask', name: 'Ask Me Anything', description: 'Ask me anything without revealing who you are.', path: '/ask', icon: '?' },
+    { slug: 'opinion', name: 'Honest Opinion', description: 'Get honest opinions from the people around you.', path: '/opinion', icon: '◈' },
+    { slug: 'crush', name: 'Crush', description: 'Find out what people secretly think about you.', path: '/crush', icon: '♡' },
+    { slug: 'compliment', name: 'Compliments', description: 'Send me a compliment without revealing yourself.', path: '/compliment', icon: '✧' },
+    { slug: 'roast', name: 'Roast Me', description: 'Give me your funniest anonymous roast.', path: '/roast', icon: '↯' }
+  ];
+  let selectedMode = 0;
+  let modePointerStart = null;
+
+  function selectedChatMode() {
+    return chatModes[selectedMode];
+  }
+
+  function getShareUrl() {
+    const mode = selectedChatMode();
+    return window.location.origin + mode.path + '/' + shareUsername;
+  }
+
+  function renderModeDeck() {
+    const deck = document.getElementById('mode-deck');
+    const dots = document.getElementById('mode-dots');
+    deck.innerHTML = chatModes.map((mode, index) => {
+      const distance = index - selectedMode;
+      const hidden = Math.abs(distance) > 2;
+      return `<article class="mode-card mode-${mode.slug}${index === selectedMode ? ' mode-card-active' : ''}${Math.abs(distance) === 1 ? ' mode-card-near' : ''}${hidden ? ' mode-card-hidden' : ''}" style="--mode-distance:${distance};z-index:${10 - Math.abs(distance)}" aria-hidden="${index !== selectedMode}">
+        <div class="mode-card-top"><span class="mode-icon" aria-hidden="true">${mode.icon}</span><span class="mode-count">${String(index + 1).padStart(2, '0')} / 08</span></div>
+        <div class="mode-card-copy"><div class="mode-label">ANON CHAT VERSION</div><h2>${escapeHtml(mode.name)}</h2><p>${escapeHtml(mode.description)}</p></div>
+        <div class="mode-url">${escapeHtml(window.location.origin + mode.path + '/' + shareUsername)}</div>
+      </article>`;
+    }).join('');
+    dots.innerHTML = chatModes.map((mode, index) => `<button type="button" class="mode-dot${index === selectedMode ? ' active' : ''}" role="tab" aria-label="${escapeHtml(mode.name)}" aria-selected="${index === selectedMode}" onclick="selectMode(${index})"></button>`).join('');
+  }
+
+  function selectMode(index) {
+    selectedMode = (index + chatModes.length) % chatModes.length;
+    renderModeDeck();
+  }
+
+  function moveMode(direction) {
+    selectMode(selectedMode + direction);
+  }
+
+  function beginModeDrag(event) {
+    modePointerStart = event.clientX;
+  }
+
+  function finishModeDrag(event) {
+    if (modePointerStart === null) return;
+    const distance = event.clientX - modePointerStart;
+    modePointerStart = null;
+    if (Math.abs(distance) > 45) moveMode(distance < 0 ? 1 : -1);
+  }
+
+  const modeViewport = document.getElementById('mode-carousel-viewport');
+  if (modeViewport) {
+    modeViewport.addEventListener('pointerdown', beginModeDrag);
+    modeViewport.addEventListener('pointerup', finishModeDrag);
+    modeViewport.addEventListener('pointercancel', () => { modePointerStart = null; });
+    modeViewport.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') { event.preventDefault(); moveMode(1); }
+      if (event.key === 'ArrowLeft') { event.preventDefault(); moveMode(-1); }
+    });
+  }
+  try {
+    renderModeDeck();
+  } catch (error) {
+    console.error('Chat mode carousel failed to initialize:', error);
+  }
+  let messagesState = [];
+  let currentDetailId = null;
+
+  function normalizeMessage(message) {
+    const id = String(message.id || message._id || '');
+    return {
+      ...message,
+      id,
+      body: String(message.body || ''),
+      created_at: message.created_at || message.createdAt || '',
+      mode: String(message.mode || 'anonymous'),
+      read: Boolean(message.read),
+      flagged: Boolean(message.flagged)
+    };
+  }
+
+  function normalizeMessages(messages) {
+    return Array.isArray(messages) ? messages.map(normalizeMessage).filter((message) => message.id) : [];
+  }
+
+  // Parse messages with better error handling
+  try {
+    const seedElement = document.getElementById('messages-seed');
+    if (seedElement) {
+      const rawData = seedElement.textContent;
+      console.log('Raw messages data length:', rawData.length);
+      messagesState = normalizeMessages(JSON.parse(rawData));
+      console.log('Parsed messages count:', messagesState.length);
+    } else {
+      console.error('messages-seed element not found');
+    }
+  } catch (e) {
+    console.error('Failed to parse messages:', e);
+    messagesState = [];
+  }
+
+  const ROW_ICON_ENVELOPE = '<svg viewBox="0 0 24 24" width="19" height="19" fill="none"><path d="M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6"/><path d="M12 12.6c-.1 0-.2 0-.3-.1-.5-.3-3-2-3-3.6 0-.8.6-1.4 1.4-1.4.6 0 1.1.3 1.5.9.5-.6 1-.9 1.6-.9.8 0 1.4.6 1.4 1.4 0 1.6-2.5 3.3-3 3.6-.1.1-.2.1-.3.1Z" fill="currentColor"/></svg>';
+  const CHEVRON_RIGHT = '<svg class="row-chevron" viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  // ---------- Tabs ----------
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-panel').forEach((p) => p.classList.toggle('active', p.dataset.panel === tab));
+    document.querySelectorAll('.nav-item[data-tab]').forEach((n) => n.classList.toggle('active', n.dataset.tab === tab));
+    window.scrollTo(0, 0);
+  }
+
+  // ---------- Link + share ----------
+  function copyLink() {
+    navigator.clipboard.writeText(getShareUrl()).then(() => showToast(`${selectedChatMode().name} link copied!`));
+  }
+
+  function toggleShareMenu(e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById('share-menu');
+    if (menu) menu.classList.toggle('hidden');
+  }
+
+  async function shareLink(e) {
+    if (e) e.stopPropagation();
+    await shareTo(null);
+  }
+
+  document.addEventListener('click', () => {
+    const shareMenu = document.getElementById('share-menu');
+    if (shareMenu) shareMenu.classList.add('hidden');
+    const menu = document.getElementById('detail-menu');
+    if (menu) menu.classList.add('hidden');
+  });
+
+  async function shareTo(platform) {
+    const link = getShareUrl();
+    const mode = selectedChatMode();
+    const caption = mode.name + ' on Anon Chat: ' + link;
+
+    let blob = null;
+    try {
+      blob = await renderLinkShareImageBlob({
+        username: shareUsername,
+        displayName: shareDisplayName,
+        profilePhoto: shareProfilePhoto,
+        mode
+      });
+    } catch (e) {
+      blob = null;
+    }
+
+    if (blob && navigator.share && navigator.canShare) {
+      try {
+        const file = new File([blob], 'anon-chat-invite.png', { type: 'image/png' });
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: 'Anon Chat', text: caption });
+          document.getElementById('share-menu').classList.add('hidden');
+          return;
+        }
+      } catch (e) {
+        // cancelled by user, or files-share unsupported here — fall through to the
+        // per-platform link below
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(caption);
+    } catch (e) {
+      // clipboard unavailable — the platform link below still works
+    }
+
+    if (platform === 'whatsapp') {
+      window.open('https://wa.me/?text=' + encodeURIComponent(caption), '_blank');
+      showToast('Caption copied — opening WhatsApp…');
+    } else if (platform === 'snapchat') {
+      window.open('https://www.snapchat.com/scan?attachmentUrl=' + encodeURIComponent(link), '_blank');
+      showToast('Caption copied — opening Snapchat…');
+    } else if (platform === 'instagram') {
+      window.open('https://instagram.com', '_blank');
+      showToast('Caption copied — paste it into your bio, story, or DM!');
+    }
+
+    if (blob) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'anon-chat-invite.png';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast('Card image downloaded. Caption copied!');
+    } else {
+      showToast('Could not generate the card image.');
+    }
+
+    document.getElementById('share-menu').classList.add('hidden');
+  }
+
+  // ---------- Inbox list rendering ----------
+  function messageRowHTML(m) {
+    const unread = !m.read;
+    const body = String(m.body || '');
+    const messageId = String(m.id || m._id || '');
+    const timestamp = m.created_at || m.createdAt || '';
+    const preview = body.length > 46 ? body.slice(0, 46) + '…' : body;
+    const titleText = unread ? 'New Message!' : escapeHtml(preview);
+    return `
+      <div class="inbox-row mode-${escapeHtml(m.mode || 'anonymous')}" data-id="${escapeHtml(messageId)}" onclick="openMessageDetail('${escapeHtml(messageId)}')">
+        <div class="row-icon${unread ? ' unread' : ''}">${ROW_ICON_ENVELOPE}</div>
+        <div class="row-text">
+          <div class="row-title${unread ? ' unread-title' : ''}">${titleText}</div>
+          <div class="row-time" data-timestamp="${escapeHtml(timestamp)}">${formatRelativeTime(timestamp)}</div>
+        </div>
+        ${CHEVRON_RIGHT}
+      </div>`;
+  }
+
+  function renderInbox() {
+    const list = document.getElementById('messages-list');
+    const empty = document.getElementById('empty-state');
+
+    if (messagesState.length === 0) {
+      list.innerHTML = '';
+      empty.classList.remove('hidden');
+    } else {
+      empty.classList.add('hidden');
+      list.innerHTML = messagesState.map(messageRowHTML).join('');
+    }
+
+    document.getElementById('inbox-count-title').textContent = `(${messagesState.length})`;
+    document.getElementById('stat-total').textContent = messagesState.length;
+    updateUnreadBadges();
+  }
+
+  function updateUnreadBadges() {
+    const unread = messagesState.filter((m) => !m.read).length;
+    document.getElementById('stat-unread').textContent = unread;
+
+    ['unread-badge-sidebar', 'unread-badge-bottom'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (unread > 0) {
+        el.textContent = unread > 99 ? '99+' : unread;
+        el.classList.remove('hidden');
+      } else {
+        el.classList.add('hidden');
+      }
+    });
+
+    document.title = unread > 0 ? `(${unread}) Inbox — Anon Chat` : 'Dashboard — Anon Chat';
+  }
+
+  // ---------- Message actions ----------
+  async function markAsRead(id) {
+    const m = messagesState.find((x) => x.id === id);
+    if (!m || m.read) return;
+    m.read = true;
+    renderInbox();
+    try {
+      await fetch('/dashboard/messages/' + id + '/read', { method: 'POST' });
+    } catch (e) {
+      // best-effort — a later poll reconciles state either way
+    }
+  }
+
+  async function deleteMessageCard(id) {
+    if (!confirm('Delete this message?')) return;
+    try {
+      await fetch('/dashboard/messages/' + id + '/delete', { method: 'POST' });
+      messagesState = messagesState.filter((m) => m.id !== id);
+      renderInbox();
+      closeDetail();
+      showToast('Message deleted.');
+    } catch (e) {
+      showToast('Could not delete message. Try again.');
+    }
+  }
+
+  async function reportMessage(id) {
+    const m = messagesState.find((x) => x.id === id);
+    if (!m || m.flagged) return;
+    try {
+      const res = await fetch('/dashboard/messages/' + id + '/report', { method: 'POST' });
+      if (!res.ok) throw new Error('failed');
+      m.flagged = true;
+      document.getElementById('detail-report-label').textContent = 'Reported';
+      document.getElementById('detail-report-btn').disabled = true;
+      showToast('Message reported.');
+    } catch (e) {
+      showToast('Could not report message. Try again.');
+    }
+  }
+
+  async function blockSender(id) {
+    if (!confirm("Block this sender? They won't be able to message you again.")) return;
+    try {
+      const res = await fetch('/dashboard/messages/' + id + '/block', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        showToast(data.error || 'Could not block sender.');
+        return;
+      }
+      showToast('Sender blocked.');
+    } catch (e) {
+      showToast('Could not block sender. Try again.');
+    }
+  }
+
+  async function exportMessageImage(id) {
+    const m = messagesState.find((x) => x.id === id);
+    if (!m) return;
+    showToast('Preparing image…');
+
+    let blob;
+    try {
+      blob = await renderMessageToImageBlob(m);
+    } catch (e) {
+      showToast('Could not generate image.');
+      return;
+    }
+
+    try {
+      const file = new File([blob], 'anon-message.png', { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: 'Anonymous Message', text: 'Send me anonymous messages!' });
+        return;
+      }
+    } catch (e) {
+      // cancelled, or files-share unsupported — fall through to download
+    }
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'anon-message.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    showToast('Image downloaded — share it anywhere!');
+  }
+
+  // ---------- Detail overlay ----------
+  function openMessageDetail(id) {
+    const m = messagesState.find((x) => x.id === id);
+    if (!m) return;
+
+    currentDetailId = id;
+    document.getElementById('detail-body').textContent = m.body;
+    document.querySelector('.detail-title').textContent = MESSAGE_MODE_TITLES[m.mode] || MESSAGE_MODE_TITLES.anonymous;
+    document.querySelector('.detail-gradient-header').className = `detail-gradient-header mode-header-${m.mode}`;
+    document.getElementById('detail-time-text').textContent = formatRelativeTime(m.created_at);
+    document.getElementById('detail-report-label').textContent = m.flagged ? 'Reported' : 'Report';
+    document.getElementById('detail-report-btn').disabled = !!m.flagged;
+    document.getElementById('message-detail').classList.remove('hidden');
+    document.getElementById('detail-menu').classList.add('hidden');
+
+    markAsRead(id);
+  }
+
+  function closeDetail() {
+    document.getElementById('message-detail').classList.add('hidden');
+    document.getElementById('detail-menu').classList.add('hidden');
+    currentDetailId = null;
+    renderInbox();
+  }
+
+  function closeDetailOutside(e) {
+    if (e.target.id === 'message-detail') closeDetail();
+  }
+
+  function toggleDetailMenu(e) {
+    e.stopPropagation();
+    document.getElementById('detail-menu').classList.toggle('hidden');
+  }
+
+  // ---------- Auto-refresh (polling) ----------
+  function startPolling() {
+    setInterval(async () => {
+      try {
+        const res = await fetch('/dashboard/api/messages');
+        if (!res.ok) return;
+        const data = await res.json();
+        const newCount = data.messages.length - messagesState.length;
+        messagesState = normalizeMessages(data.messages);
+        renderInbox();
+        if (newCount > 0) {
+          showToast(newCount === 1 ? 'New message received!' : newCount + ' new messages received!');
+        }
+      } catch (e) {
+        // network hiccup — the next poll retries
+      }
+    }, 5000);
+  }
+
+  // Keep "X minutes ago" timestamps fresh between polls.
+  setInterval(() => {
+    document.querySelectorAll('.row-time').forEach((el) => {
+      el.textContent = formatRelativeTime(el.dataset.timestamp);
+    });
+  }, 30000);
+
+  renderInbox();
+  startPolling();
+
+  if (window.location.hash === '#inbox') {
+    switchTab('inbox');
+  }
+</script>
+
+<%- include('partials/footer') %>

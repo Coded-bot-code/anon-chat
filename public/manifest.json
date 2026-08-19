@@ -1,0 +1,105 @@
+{
+  "name": "Anon Chat — Anonymous Messaging",
+  "short_name": "Anon Chat",
+  "description": "Send and receive anonymous messages, get honest feedback, and connect anonymously.",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "background_color": "#ff5ca8",
+  "theme_color": "#6a5cff",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["social", "communication", "messaging"],
+  "icons": [
+    {
+      "src": "https://i.ibb.co/qYRhvLdM/upload-1786830387799.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.ibb.co/qYRhvLdM/upload-1786830387799.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "https://i.ibb.co/qYRhvLdM/upload-1786830387799.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.ibb.co/qYRhvLdM/upload-1786830387799.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "https://i.ibb.co/qYRhvLdM/upload-1786830387799.png",
+      "sizes": "120x120",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.ibb.co/qYRhvLdM/upload-1786830387799.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.ibb.co/qYRhvLdM/upload-1786830387799.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://i.ibb.co/qYRhvLdM/upload-1786830387799.png",
+      "sizes": "64x64",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "My Inbox",
+      "short_name": "Inbox",
+      "description": "Check your anonymous messages",
+      "url": "/dashboard",
+      "icons": [{ "src": "https://i.ibb.co/qYRhvLdM/upload-1786830387799.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Share Link",
+      "short_name": "Share",
+      "description": "Share your anonymous chat link",
+      "url": "/dashboard",
+      "icons": [{ "src": "https://i.ibb.co/qYRhvLdM/upload-1786830387799.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Settings",
+      "short_name": "Settings",
+      "description": "Customize your profile",
+      "url": "/dashboard/settings",
+      "icons": [{ "src": "https://i.ibb.co/qYRhvLdM/upload-1786830387799.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://i.ibb.co/qYRhvLdM/upload-1786830387799.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "platform": "android",
+      "label": "Anon Chat Inbox"
+    }
+  ],
+  "share_target": {
+    "action": "/",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
+}

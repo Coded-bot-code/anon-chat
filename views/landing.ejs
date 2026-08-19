@@ -1,0 +1,45 @@
+<% title = 'Anon Chat' %>
+<%- include('partials/header') %>
+
+<div class="landing">
+  <div class="landing-badge-icon">
+    <svg width="42" height="42" viewBox="0 0 24 24" fill="none"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" fill="url(#landingLogoGrad)"/><path d="M12 12.8c-.1 0-.2 0-.3-.1-.3-.2-2.9-2-2.9-3.8 0-.9.7-1.6 1.6-1.6.6 0 1.1.3 1.6.9.5-.6 1-.9 1.6-.9.9 0 1.6.7 1.6 1.6 0 1.8-2.6 3.6-2.9 3.8-.1.1-.2.1-.3.1Z" fill="#fff"/><defs><linearGradient id="landingLogoGrad" x1="0" y1="0" x2="24" y2="17" gradientUnits="userSpaceOnUse"><stop stop-color="#6a5cff"/><stop offset="1" stop-color="#ff5ca8"/></linearGradient></defs></svg>
+  </div>
+  <h1 class="landing-title">Say it.<br>Anonymously.</h1>
+  <p class="landing-subtitle">
+    Create your link, share it anywhere, and get honest anonymous
+    messages from friends, followers, or total strangers.
+  </p>
+
+  <a href="/signup" class="btn-get-started">
+    Get Started
+    <svg class="arrow" viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+
+  <p class="landing-login">
+    Already have an account? <a href="/login">Log in</a>
+  </p>
+
+  <div class="landing-features">
+    <div class="feature">
+      <span class="feature-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M9 15l6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M11 7l1-1a4 4 0 1 1 6 6l-1 1M13 17l-1 1a4 4 0 1 1-6-6l1-1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <span>Your own link</span>
+    </div>
+    <div class="feature">
+      <span class="feature-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.8"/><path d="M3 4l18 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </span>
+      <span>100% anonymous senders</span>
+    </div>
+    <div class="feature">
+      <span class="feature-icon">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 8.4 8.4 0 0 1-3.7-.85L3 20l1-5.4A8.5 8.5 0 1 1 21 11.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      </span>
+      <span>Fun message prompts</span>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,33 @@
+<!-- INBOX TAB -->
+<div id="inbox" class="tab-panel" data-panel="inbox">
+  <div class="inbox-header">
+    <h1 class="panel-title">Inbox <span id="inbox-count-title">(0)</span></h1>
+    <p class="panel-subtitle">Tap a message to open it.</p>
+  </div>
+
+  <div id="empty-state" class="empty-state<%= messages && messages.length ? ' hidden' : '' %>">
+    <div class="empty-icon">
+      <svg viewBox="0 0 24 24" width="34" height="34" fill="none"><path d="M3 8.5 12 14l9-5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/></svg>
+    </div>
+    <h3>No messages yet</h3>
+    <p>Share your link with friends or on social media to receive your first message!</p>
+  </div>
+
+  <div id="messages-list" class="messages-list" aria-live="polite">
+    <% (messages || []).forEach(function (message) { %>
+      <% const messageId = String(message.id || message._id || ''); %>
+      <% const messageBody = String(message.body || ''); %>
+      <% const messageTime = message.created_at || message.createdAt || ''; %>
+      <div class="inbox-row mode-<%= message.mode || 'anonymous' %>" data-id="<%= messageId %>" onclick="openMessageDetail('<%= messageId %>')">
+        <div class="row-icon<%= message.read ? '' : ' unread' %>">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none"><path d="M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.6"/><path d="m4 7 8 6 8-6" stroke="currentColor" stroke-width="1.6"/></svg>
+        </div>
+        <div class="row-text">
+          <div class="row-title<%= message.read ? '' : ' unread-title' %>"><%= message.read ? (messageBody.length > 46 ? messageBody.slice(0, 46) + '...' : messageBody) : 'New Message!' %></div>
+          <div class="row-time" data-timestamp="<%= messageTime %>"><%= messageTime %></div>
+        </div>
+        <span class="row-chevron" aria-hidden="true">›</span>
+      </div>
+    <% }); %>
+  </div>
+</div>

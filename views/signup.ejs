@@ -1,0 +1,161 @@
+<% title = 'Sign Up' %>
+<%- include('partials/header') %>
+
+<div class="auth-plain">
+  <a href="/" class="back-link">← Back</a>
+
+  <div class="step-dots">
+    <span class="dot active" data-dot="1"></span>
+    <span class="dot" data-dot="2"></span>
+    <span class="dot" data-dot="3"></span>
+  </div>
+
+  <% if (error) { %>
+    <div class="error"><%= error %></div>
+  <% } %>
+
+  <form method="POST" action="/signup" class="plain-form wizard-form" id="signup-form">
+
+    <!-- STEP 1: username + display name -->
+    <div class="step active" data-step="1">
+      <h1 class="plain-title">Let's set you up</h1>
+      <p class="plain-subtitle">Pick a username — this becomes your link.</p>
+
+      <input type="text" name="username" id="username" placeholder="Username" autocomplete="off" required>
+      <div class="field-error" id="username-error"></div>
+
+      <input type="text" name="display_name" id="display_name" placeholder="Display name (optional)" autocomplete="off">
+
+      <button type="button" class="btn-white" onclick="goNext(1)">Next</button>
+    </div>
+
+    <!-- STEP 2: password -->
+    <div class="step" data-step="2">
+      <h1 class="plain-title">Okay, <span id="handle-preview">@you</span></h1>
+      <p class="plain-subtitle">Now set a password to protect your inbox.</p>
+<div class="password-input-wrapper">
+  <input 
+    type="password" 
+    id="password" 
+    name="password" 
+    placeholder="Password (min. 6 characters)" 
+    autocomplete="new-password"
+    required
+  >
+  <button 
+    type="button" 
+    class="toggle-password-btn" 
+    onclick="togglePasswordVisibility('password', this)" 
+    aria-label="Toggle password visibility"
+  >
+    <!-- Eye Open Icon (Default) -->
+    <svg class="eye-icon" viewBox="0 0 24 24">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+      <circle cx="12" cy="12" r="3"></circle>
+    </svg>
+  </button>
+</div>
+      <div class="field-error" id="password-error"></div>
+
+      <div class="wizard-nav">
+        <button type="button" class="btn-ghost" onclick="goBack(2)">Back</button>
+        <button type="button" class="btn-white" onclick="goNext(2)">Next</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: profile photo -->
+    <div class="step" data-step="3">
+      <h1 class="plain-title">Add a profile photo</h1>
+      <p class="plain-subtitle">Totally optional — you can skip this.</p>
+
+      <input type="hidden" name="profile_photo" id="profile_photo_data" value="">
+
+      <div class="avatar-upload" onclick="document.getElementById('photo-input').click()">
+        <img id="avatar-preview" class="avatar-preview hidden" alt="Your profile photo">
+        <div id="avatar-placeholder" class="avatar-placeholder">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none"><path d="M4 8a2 2 0 0 1 2-2h1.2a1 1 0 0 0 .8-.4l.6-.8a1 1 0 0 1 .8-.4h5.2a1 1 0 0 1 .8.4l.6.8a1 1 0 0 0 .8.4H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13" r="3.2" stroke="currentColor" stroke-width="1.6"/></svg>
+        </div>
+      </div>
+      <input type="file" id="photo-input" accept="image/*" class="hidden">
+
+      <div class="wizard-nav">
+        <button type="button" class="btn-ghost" onclick="goBack(3)">Back</button>
+        <button type="button" class="btn-ghost" onclick="skipPhoto()">Skip</button>
+        <button type="submit" class="btn-white">Sign Up</button>
+      </div>
+    </div>
+  </form>
+
+  <p class="switch-link-plain">Already have an account? <a href="/login">Log in</a></p>
+</div>
+
+<script>
+  function showStep(n) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    document.querySelector('.step[data-step="' + n + '"]').classList.add('active');
+    document.querySelectorAll('.dot').forEach(d => {
+      d.classList.toggle('active', Number(d.dataset.dot) <= n);
+    });
+  }
+
+  function showFieldError(id, msg) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = msg ? 'block' : 'none';
+  }
+
+  function goNext(fromStep) {
+    if (fromStep === 1) {
+      const username = document.getElementById('username').value.trim();
+      const re = /^[a-zA-Z0-9_]{3,20}$/;
+      if (!re.test(username)) {
+        showFieldError('username-error', 'Username must be 3-20 characters: letters, numbers, underscores only.');
+        return;
+      }
+      showFieldError('username-error', '');
+      document.getElementById('handle-preview').textContent = '@' + username;
+      showStep(2);
+    } else if (fromStep === 2) {
+      const pw = document.getElementById('password').value;
+      if (pw.length < 6) {
+        showFieldError('password-error', 'Password must be at least 6 characters.');
+        return;
+      }
+      showFieldError('password-error', '');
+      showStep(3);
+    }
+  }
+
+  function goBack(fromStep) {
+    showStep(fromStep - 1);
+  }
+
+  document.getElementById('photo-input').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 1.5 * 1024 * 1024) {
+      alert('Please choose an image under 1.5MB.');
+      e.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+      document.getElementById('profile_photo_data').value = ev.target.result;
+      const preview = document.getElementById('avatar-preview');
+      preview.src = ev.target.result;
+      preview.classList.remove('hidden');
+      document.getElementById('avatar-placeholder').classList.add('hidden');
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function skipPhoto() {
+    document.getElementById('profile_photo_data').value = '';
+    document.getElementById('signup-form').submit();
+  }
+</script>
+
+<%- include('partials/footer') %>
